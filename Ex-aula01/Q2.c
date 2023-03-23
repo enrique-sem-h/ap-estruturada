@@ -5,6 +5,7 @@ de tinta é de 300 ml por metro quadrado e a quantidade de tinta por lata é de 
 #include <stdio.h>
 #include <locale.h>
 #include <stdlib.h>
+#include <math.h>
 #define PI 3.14
 
 int main(){
@@ -42,8 +43,7 @@ int main(){
         latas = (parede * 0.3) / 2;
 
         printf("Área da parede: %.2f\n", parede);
-        printf("Será(ão) necessária(s) %.2f latas de tinta para pintar essa parede\n", latas);
-        
+        printf("Será(ão) necessária(s) %.2f latas de tinta para pintar essa parede\n", ceil(latas));
         
         break;
     default:
