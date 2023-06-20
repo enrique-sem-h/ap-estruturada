@@ -9,39 +9,125 @@ O sistema deverá exibir um menu com as opções disponíveis e realizar as cham
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct estoque
-{
-    int codProduto;
-    float preco;
-    estoque* prox;
-}Estoque;
+typedef struct {
+    int codigo;
+    char descricao[100];
+    int quantidade;
+    float valor;
+} Produto;
 
-Estoque* novaLista(void){
-    return NULL;
+void inicializarLista(Produto *estoque, int *quantidadeProdutos) {
+    *quantidadeProdutos = 0;
 }
 
-Estoque* insert(int codProduto, float preco, Estoque* estoque){
-    Estoque* novo = (Estoque*)malloc(sizeof(Estoque));
-    novo->codProduto = codProduto;
-    novo->preco = preco;
-    novo->prox = estoque;
-    return novo;
+void adicionarProduto(Produto *estoque, int *quantidadeProdutos) {
+    printf("Informe o código do produto: ");
+    scanf("%d", &estoque[*quantidadeProdutos].codigo);
+
+    printf("Informe a descrição do produto: ");
+    scanf(" %[^\n]s", estoque[*quantidadeProdutos].descricao);
+
+    printf("Informe a quantidade do produto: ");
+    scanf("%d", &estoque[*quantidadeProdutos].quantidade);
+
+    printf("Informe o valor do produto: ");
+    scanf("%f", &estoque[*quantidadeProdutos].valor);
+
+    (*quantidadeProdutos)++;
 }
 
-void print(Estoque* estoque){
-    Estoque* p = estoque;
-
-    while(p != NULL){
-        printf("Cod: %d\nPreco: R$%.2f\n\n", p->codProduto, p->preco);
-        p = p->prox;
+void imprimirRelatorio(Produto *estoque, int quantidadeProdutos) {
+    printf("Relatório de Produtos:\n");
+    printf("Código\tDescrição\tQuantidade\tValor\n");
+    for (int i = 0; i < quantidadeProdutos; i++) {
+        printf("%d\t%s\t%d\t\t%.2f\n", estoque[i].codigo, estoque[i].descricao, estoque[i].quantidade, estoque[i].valor);
     }
 }
 
-int main(){
-    Estoque* estoque;
+void pesquisarProduto(Produto *estoque, int quantidadeProdutos) {
+    int codigo;
+    printf("Informe o código do produto: ");
+    scanf("%d", &codigo);
 
-    estoque = novaLista();
-    estoque = insert(1, 10, estoque);
+    for (int i = 0; i < quantidadeProdutos; i++) {
+        if (estoque[i].codigo == codigo) {
+            printf("Produto encontrado:\n");
+            printf("Código\tDescrição\tQuantidade\tValor\n");
+            printf("%d\t%s\t%d\t\t%.2f\n", estoque[i].codigo, estoque[i].descricao, estoque[i].quantidade, estoque[i].valor);
+            return;
+        }
+    }
 
-    print(estoque);
+    printf("Produto não encontrado.\n");
+}
+
+void removerProduto(Produto *estoque, int *quantidadeProdutos) {
+    int codigo;
+    printf("Informe o código do produto a ser removido: ");
+    scanf("%d", &codigo);
+
+    int i;
+    for (i = 0; i < *quantidadeProdutos; i++) {
+        if (estoque[i].codigo == codigo) {
+            break;
+        }
+    }
+
+    if (i == *quantidadeProdutos) {
+        printf("Produto não cadastrado.\n");
+        return;
+    }
+
+    for (int j = i; j < *quantidadeProdutos - 1; j++) {
+        estoque[j] = estoque[j + 1];
+    }
+
+    (*quantidadeProdutos)--;
+    printf("Produto removido com sucesso.\n");
+}
+
+void exibirMenu() {
+    printf("\n");
+    printf("======= Menu =======\n");
+    printf("1 - Adicionar Produto\n");
+    printf("2 - Imprimir Relatório\n");
+    printf("3 - Pesquisar Produto\n");
+    printf("4 - Remover Produto\n");
+    printf("0 - Sair\n");
+    printf("====================\n");
+    printf("Digite a opção desejada: ");
+}
+
+int main() {
+    Produto estoque[100];
+    int quantidadeProdutos = 0;
+    int opcao;
+
+    inicializarLista(estoque, &quantidadeProdutos);
+
+    do {
+        exibirMenu();
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                adicionarProduto(estoque, &quantidadeProdutos);
+                break;
+            case 2:
+                imprimirRelatorio(estoque, quantidadeProdutos);
+                break;
+            case 3:
+                pesquisarProduto(estoque, quantidadeProdutos);
+                break;
+            case 4:
+                removerProduto(estoque, &quantidadeProdutos);
+                break;
+            case 0:
+                printf("Saindo do programa...\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+                break;
+        }
+    } while (opcao != 0);
 }
